@@ -12,7 +12,7 @@ app = FastAPI(
 @app.get("/", tags=["Welcome Note"])
 def home():
     return {
-        "message": "Welcome to my first API"
+        "message": "Welcome to the Book Management API! Explore the endpoints to manage and query your book collection."
     }
 
 app.include_router(books_router)

@@ -1,127 +1,48 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
-from database.connection import get_connection
+from database.connection import get_db
+
+from services.search_service import (
+    search_by_title,
+    search_by_author,
+    search_by_price,
+    search_by_year
+)
 
 router = APIRouter(
     prefix="/search",
     tags=["Search"]
 )
 
+
 @router.get("/title/{book_title}")
-def get_books_by_title(book_title: str):
+def get_books_by_title(
+    book_title: str,
+    db: Session = Depends(get_db)
+):
+    return search_by_title(book_title, db)
 
-    connection = get_connection()
-    cursor = connection.cursor()
-
-    cursor.execute(
-        """
-        SELECT * FROM books
-        WHERE LOWER(title) = LOWER(?)
-        """,
-        (book_title,)
-    )
-
-    rows = cursor.fetchall()
-
-    connection.close()
-
-    return [
-        {
-            "id": row[0],
-            "title": row[1],
-            "author": row[2],
-            "price": row[3],
-            "year": row[4]
-        }
-        for row in rows
-    ]
 
 @router.get("/author/{author_name}")
-def get_books_by_author(author_name: str):
+def get_books_by_author(
+    author_name: str,
+    db: Session = Depends(get_db)
+):
+    return search_by_author(author_name, db)
 
-    connection = get_connection()
-    cursor = connection.cursor()
-
-    cursor.execute(
-        """
-        SELECT * FROM books
-        WHERE LOWER(author) = LOWER(?)
-        """,
-        (author_name,)
-    )
-
-    rows = cursor.fetchall()
-
-    connection.close()
-
-    return [
-        {
-            "id": row[0],
-            "title": row[1],
-            "author": row[2],
-            "price": row[3],
-            "year": row[4]
-        }
-        for row in rows
-    ]
 
 @router.get("/price/{book_price}")
-def get_books_by_price(book_price: float):
+def get_books_by_price(
+    book_price: float,
+    db: Session = Depends(get_db)
+):
+    return search_by_price(book_price, db)
 
-    connection = get_connection()
-    cursor = connection.cursor()
-
-    cursor.execute(
-        """
-        SELECT * FROM books
-        WHERE price = ?
-        """,
-        (book_price,)
-    )
-
-    rows = cursor.fetchall()
-
-    connection.close()
-
-    if not rows:
-        return {"message": "No books found"}
-
-    return [
-        {
-            "id": row[0],
-            "title": row[1],
-            "author": row[2],
-            "price": row[3],
-            "year": row[4]
-        }
-        for row in rows
-    ]
 
 @router.get("/year/{year}")
-def get_books_by_year(year: int):
-
-    connection = get_connection()
-    cursor = connection.cursor()
-
-    cursor.execute(
-        """
-        SELECT * FROM books
-        WHERE year = ?
-        """,
-        (year,)
-    )
-
-    rows = cursor.fetchall()
-
-    connection.close()
-
-    return [
-        {
-            "id": row[0],
-            "title": row[1],
-            "author": row[2],
-            "price": row[3],
-            "year": row[4]
-        }
-        for row in rows
-    ]
+def get_books_by_year(
+    year: int,
+    db: Session = Depends(get_db)
+):
+    return search_by_year(year, db)

@@ -1,4 +1,12 @@
-import sqlite3
+from database.session import SessionLocal
 
-def get_connection():
-    return sqlite3.connect("database/books.db")
+
+def get_db():
+
+    db = SessionLocal()
+
+    try:
+        yield db
+
+    finally:
+        db.close()
