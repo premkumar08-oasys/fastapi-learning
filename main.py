@@ -4,6 +4,7 @@ from routers.books import router as books_router
 from routers.search import router as search_router
 from routers.stats import router as stats_router
 from routers.filters import router as filters_router
+from routers.users import router as users_router
 
 app = FastAPI(
     title="Book Management API"
@@ -19,3 +20,4 @@ app.include_router(books_router)
 app.include_router(search_router)
 app.include_router(stats_router)
 app.include_router(filters_router)
+app.include_router(users_router)

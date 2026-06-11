@@ -5,6 +5,10 @@ from database.connection import get_db
 
 from schemas.book import Book
 from schemas.book_response import BookResponse
+from dependencies.auth import get_current_user
+
+from database.models import UserModel
+from dependencies.roles import require_admin
 
 from services.book_service import (
     get_all_books,
@@ -48,10 +52,17 @@ def get_book(
 )
 def create_book(
     book: Book,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(require_admin)
 ):
-    return create_new_book(book, db)
+    print("User ID:", current_user.id)
+    print("Username:", current_user.username)
+    print("Email:", current_user.email)
 
+    return create_new_book(
+        book,
+        db
+    )
 
 @router.put(
     "/{book_id}",
@@ -60,8 +71,11 @@ def create_book(
 def update_book(
     book_id: int,
     updated_book: Book,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(require_admin)
 ):
+    print("Current User:", current_user)
+
     return update_existing_book(
         book_id,
         updated_book,
@@ -72,8 +86,11 @@ def update_book(
 @router.delete("/{book_id}")
 def delete_book(
     book_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(require_admin)
 ):
+    print("Current User:", current_user)
+
     return delete_existing_book(
         book_id,
         db
