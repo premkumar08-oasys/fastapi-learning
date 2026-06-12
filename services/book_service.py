@@ -9,8 +9,17 @@ from schemas.book import Book
 current_year = datetime.now().year
 
 
-def get_all_books(db: Session):
-    return db.query(BookModel).all()
+def get_all_books(
+        db: Session,
+        skip: int = 0,
+        limit: int = 10
+):
+    return (
+        db.query(BookModel)
+        .offset(skip)
+        .limit(limit)
+        .all()        
+    )
 
 
 def get_book_by_id(book_id: int, db: Session):

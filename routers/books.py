@@ -10,12 +10,23 @@ from dependencies.auth import get_current_user
 from database.models import UserModel
 from dependencies.roles import require_admin
 
+from fastapi import BackgroundTasks
+
+from utils.background_tasks import (
+    log_book_creation
+)
+
 from services.book_service import (
     get_all_books,
     get_book_by_id,
     create_new_book,
     update_existing_book,
     delete_existing_book
+)
+
+from dependencies.auth import (
+    get_current_user,
+    get_current_admin
 )
 
 router = APIRouter(
@@ -29,9 +40,15 @@ router = APIRouter(
     response_model=list[BookResponse]
 )
 def get_books(
+    skip: int = 0,
+    limit: int = 10,
     db: Session = Depends(get_db)
 ):
-    return get_all_books(db)
+    return get_all_books(
+        db,
+        skip,
+        limit
+    )
 
 
 @router.get(
@@ -52,12 +69,21 @@ def get_book(
 )
 def create_book(
     book: Book,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(require_admin)
 ):
+    print("Book Created")
     print("User ID:", current_user.id)
     print("Username:", current_user.username)
     print("Email:", current_user.email)
+    print("Role:", current_user.role)
+
+    background_tasks.add_task(
+    log_book_creation,
+    current_user.username,
+    book.title
+    )
 
     return create_new_book(
         book,
@@ -72,9 +98,9 @@ def update_book(
     book_id: int,
     updated_book: Book,
     db: Session = Depends(get_db),
-    current_user: UserModel = Depends(require_admin)
+    current_admin: UserModel = Depends(require_admin)
 ):
-    print("Current User:", current_user)
+    print("Current User:", current_admin.username)
 
     return update_existing_book(
         book_id,
@@ -87,9 +113,9 @@ def update_book(
 def delete_book(
     book_id: int,
     db: Session = Depends(get_db),
-    current_user: UserModel = Depends(require_admin)
+    current_admin: UserModel = Depends(require_admin)
 ):
-    print("Current User:", current_user)
+    print("Current User:", current_admin.username)
 
     return delete_existing_book(
         book_id,

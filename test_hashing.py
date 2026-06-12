@@ -1,16 +1,16 @@
-from utils.hashing import hash_password
-from utils.hashing import verify_password
+# from utils.hashing import hash_password
+# from utils.hashing import verify_password
 
-password = "prem123"
+# password = "prem123"
 
-hashed = hash_password(password)
+# hashed = hash_password(password)
 
-print("Original:", password)
-print("Hashed:", hashed)
+# print("Original:", password)
+# print("Hashed:", hashed)
 
-result = verify_password(
-    "prem123",
-    hashed
-)
+# result = verify_password(
+#     "prem123",
+#     hashed
+# )
 
-print("Verified:", result)
+# print("Verified:", result)

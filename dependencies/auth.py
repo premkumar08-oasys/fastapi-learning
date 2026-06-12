@@ -1,6 +1,4 @@
-from fastapi import Depends
-from fastapi import HTTPException
-from fastapi import status
+from fastapi import Depends, HTTPException, status
 
 from sqlalchemy.orm import Session
 
@@ -14,6 +12,7 @@ from utils.jwt_handler import verify_access_token
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="users/login"
 )
+
 
 def get_current_user(
     token: str = Depends(oauth2_scheme),
@@ -43,3 +42,16 @@ def get_current_user(
         )
 
     return user
+
+
+def get_current_admin(
+    current_user: UserModel = Depends(get_current_user)
+):
+
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admins only"
+        )
+
+    return current_user
