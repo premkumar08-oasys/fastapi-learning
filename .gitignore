@@ -4,4 +4,6 @@ __pycache__/
 *.pyo
 *.pyd
 .vscode/
-.idea/
+.idea/  
+.env/
+test.db
