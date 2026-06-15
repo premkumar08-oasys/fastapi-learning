@@ -54,12 +54,7 @@ app.add_middleware(
 
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=[
-        "127.0.0.1",
-        "localhost",
-        "testserver",
-        "fastapi-learning-hjb1.onrender.com"
-    ]
+    allowed_hosts=["*"]
 )
 
 app.add_middleware(
