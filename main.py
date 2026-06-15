@@ -58,7 +58,7 @@ app.add_middleware(
         "127.0.0.1",
         "localhost",
         "testserver",
-        "https://fastapi-learning-hjb1.onrender.com"
+        "fastapi-learning-hjb1.onrender.com"
     ]
 )
 
