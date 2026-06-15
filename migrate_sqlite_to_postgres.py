@@ -8,7 +8,7 @@ sqlite_engine = create_engine("sqlite:///database/books.db")
 
 # PostgreSQL database
 postgres_engine = create_engine(
-    "postgresql+psycopg2://postgres:pg123@postgres_db:5432/book_management"
+    "postgresql://book_management_larj_user:bnD2BpIuyn3QoSnolzY58ChwTRTHH2ba@dpg-d8npnmhkh4rs73ff2ipg-a.singapore-postgres.render.com/book_management_larj"
 )
 
 SQLiteSession = sessionmaker(bind=sqlite_engine)
